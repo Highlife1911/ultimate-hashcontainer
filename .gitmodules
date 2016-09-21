@@ -1,0 +1,10 @@
+[submodule "cmake"]
+
+	path = cmake
+
+	url = https://github.com/Highlife1911/cmake-init
+[submodule "gtest"]
+
+	path = gtest
+
+	url = https://github.com/google/googletest

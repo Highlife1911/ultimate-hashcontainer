@@ -1,0 +1,3 @@
+add_executable(hashcontainer_test "hashcontainer_test.cpp")
+
+target_link_libraries(hashcontainer_test gtest_main)
