@@ -10,8 +10,6 @@ struct HashContainer_test : testing::Test
 };
 
 using all_container_ts = ::testing::Types<
-	HashContainer,
-	SparseHashContainer,
 	GenericHashContainer<uint8_t, uint8_t>,
 	GenericHashContainer<uint8_t, uint16_t>,
 	GenericHashContainer<uint8_t, uint32_t>,
@@ -19,6 +17,8 @@ using all_container_ts = ::testing::Types<
 	GenericHashContainer<uint16_t, uint16_t>,
 	GenericHashContainer<uint16_t, uint32_t>,
 	GenericHashContainer<uint32_t, uint8_t>,
+	GenericHashContainer<uint32_t, uint16_t>,
+	GenericHashContainer<uint32_t, uint32_t>,
 	GenericHashContainer<uint64_t, uint8_t>,
 	GenericHashContainer<uint64_t, uint16_t>,
 	GenericHashContainer<uint64_t, uint32_t>>;
@@ -28,22 +28,24 @@ TYPED_TEST(HashContainer_test, initialize_different_sizes_no_throw)
 {
 	for (auto size : sizes)
 	{
-		EXPECT_NO_THROW(TypeParam container(size));
+		std::unique_ptr<TypeParam> container;
+		EXPECT_NO_THROW(container = std::make_unique<TypeParam>(size));
+		EXPECT_EQ(container->nodes(), size);
+		EXPECT_FALSE(container->begin());
 	}
 }
 
 TYPED_TEST(HashContainer_test, initialize_zero_size)
 {
-	EXPECT_NO_THROW(TypeParam container(0));
+	std::unique_ptr<TypeParam> container;
+	EXPECT_NO_THROW(container = std::make_unique<TypeParam>(0));
+	EXPECT_EQ(container->nodes(), 0);
+	EXPECT_EQ(container->buckets(), 0);
 }
 
 TYPED_TEST(HashContainer_test, initialize_large_sizes_throw)
 {
 	EXPECT_THROW(TypeParam container(static_cast<size_t>(TypeParam::sizeLimits::max() * 0.75f)), std::runtime_error);
-}
-
-TYPED_TEST(HashContainer_test, initialize_very_large_sizes_throw)
-{
 	EXPECT_THROW(TypeParam container(TypeParam::sizeLimits::max()), std::runtime_error);
 }
 
@@ -63,30 +65,14 @@ TYPED_TEST(HashContainer_test, clear_content)
 
 			ASSERT_EQ(*it, i);
 			ASSERT_FALSE(++it);
+
+			auto local_it = container.localBegin(i);
+			ASSERT_EQ(*local_it, i);
+			ASSERT_FALSE(++local_it);
 		}
 
 		container.clear();
 		ASSERT_FALSE(container.begin());
-	}
-}
-
-TYPED_TEST(HashContainer_test, insert_n_elements_into_n_buckets)
-{
-	for (auto size : sizes)
-	{
-		TypeParam container(size);
-		for (uint32_t i = 0; i < size; ++i)
-		{
-			container.insert(i, i);
-		}
-
-		for (uint32_t i = 0; i < size; ++i)
-		{
-			auto it = container.find(i);
-
-			ASSERT_EQ(*it, i);
-			ASSERT_FALSE(++it);
-		}
 	}
 }
 
@@ -170,12 +156,12 @@ TYPED_TEST(HashContainer_test, remove_all_elements_iterativ)
 
 			for (uint32_t i = 0; i < size; ++i)
 			{
-				container.insert(i, i);
+				container.insert(repeat * i, i);
 			}
 
 			for (uint32_t i = 0; i < size; ++i)
 			{
-				container.remove(i, i);
+				container.remove(repeat * i, i);
 			}
 		}
 	}
@@ -219,17 +205,6 @@ TYPED_TEST(HashContainer_test, find_all_elements_with_same_hash)
 		}
 
 		ASSERT_FALSE(container.find(size));
-	}
-}
-
-TYPED_TEST(HashContainer_test, iterateor_invalid_when_container_empty)
-{
-	for (auto size : sizes)
-	{
-		TypeParam container(size);
-
-		ASSERT_FALSE(container.begin());
-		ASSERT_FALSE(container.end());
 	}
 }
 
