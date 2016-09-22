@@ -142,6 +142,7 @@ inline typename GenericHashContainer<sizeType, hashType>::SearchIterator Generic
 template<typename sizeType, typename hashType>
 inline void GenericHashContainer<sizeType, hashType>::emplace(size_t hash, sizeType value) const
 {
+	assert(value != sizeLimits::max());
 	assert(m_nodeList[value].next == sizeLimits::max());
 
 	// Construct a new node but do not insert it into the bucket structure.
@@ -152,6 +153,7 @@ inline void GenericHashContainer<sizeType, hashType>::emplace(size_t hash, sizeT
 template<typename sizeType, typename hashType>
 inline void GenericHashContainer<sizeType, hashType>::insertEmplaced(sizeType value) const
 {
+	assert(value != sizeLimits::max());
 	assert(m_nodeList[value].next != sizeLimits::max());
 
 	// When the element is already emplaced we only need to update the bucket structure.
@@ -164,6 +166,7 @@ inline void GenericHashContainer<sizeType, hashType>::insertEmplaced(sizeType va
 template<typename sizeType, typename hashType>
 inline typename GenericHashContainer<sizeType, hashType>::SearchIterator GenericHashContainer<sizeType, hashType>::findEmplaced(sizeType pos) const
 {
+	assert(pos != sizeLimits::max());
 	assert(m_nodeList[pos].next != sizeLimits::max());
 
 	return find(m_nodeList[pos].hash, m_nodeList[pos].next);
