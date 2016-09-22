@@ -50,7 +50,7 @@ public:
 
 	//! @short Assigns this instance with another HashContainer.
 	//! @param other : The container to copy.
-	GenericHashContainer& operator=(const GenericHashContainer &other);
+	GenericHashContainer& operator=(GenericHashContainer other);
 
 	//! @short Moves another HashContainer to this instance.
 	//! @param other : The container to move from.

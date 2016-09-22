@@ -28,13 +28,9 @@ GenericHashContainer<sizeType, hashType>::GenericHashContainer(GenericHashContai
 }
 
 template<typename sizeType, typename hashType>
-GenericHashContainer<sizeType, hashType>& GenericHashContainer<sizeType, hashType>::operator=(const GenericHashContainer &other)
+GenericHashContainer<sizeType, hashType>& GenericHashContainer<sizeType, hashType>::operator=(GenericHashContainer other)
 {
-	m_bucketCount = other.m_bucketCount;
-	m_nodeCount = other.m_nodeCount;
-
-	m_bucketList = copyArray(other.m_bucketList);
-	m_nodeList = copyArray(other.m_nodeList);
+	swap(other);
 	return *this;
 }
 
@@ -282,7 +278,7 @@ inline sizeType GenericHashContainer<sizeType, hashType>::computeBucketCount(siz
 template<typename sizeType, typename hashType>
 inline hashType GenericHashContainer<sizeType, hashType>::high(size_t hash)
 {
-	static_assert(sizeof(hashType) < sizeof(size_t), "Hash must be less than size_t.");
+	// Return the highest part of hash that fits into hashType.
 	static const int bits = (sizeof(size_t) - sizeof(hashType)) * 8;
 	return static_cast<hashType>(hash >> bits);
 }
