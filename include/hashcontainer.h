@@ -237,6 +237,8 @@ protected:
 	std::unique_ptr<Node[]> m_nodeList;
 
 	static_assert(sizeof(size_t) == 8, "Hash data type must be 64 bit.");
+	static_assert(sizeof(sizeType) <= 8, "sizeType must not be larger than 64 bit.");
+	static_assert(sizeof(hashType) <= 8, "hashType must not be larger than 64 bit.");
 	static_assert(std::is_unsigned<sizeType>::value, "sizeType must be an unsigned integral.");
 	static_assert(std::is_unsigned<hashType>::value, "hashType must be an unsigned integral.");
 };
