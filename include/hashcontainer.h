@@ -1,6 +1,7 @@
 #pragma once
 
 #include <algorithm>
+#include <cstring>
 #include <memory>
 
 //! @short The HashContainer template defines a fixed size container to store hashes.
