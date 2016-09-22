@@ -4,7 +4,6 @@
 #include <memory>
 
 //! @short The HashContainer template defines a fixed size container to store hashes.
-
 //! This class acts as a replacement for unordered containers provided by the STL.
 //! It contains several optimizations regarding container size and insertion time.
 //! Use this container instead of the STL when you:
